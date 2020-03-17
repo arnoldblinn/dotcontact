@@ -1,2 +1,2 @@
 # dotcontact
-Prototype; playing around
+Prototype of contact publishing via DNS and JSON

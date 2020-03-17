@@ -1,0 +1,37 @@
+<html>
+
+<head>
+<title>{{title}}</title>
+<style>body {font-family: "Trebuchet MS", Helvetica, sans-serif;}</style>
+
+</head>
+<a href='/'>Query</a> | <a href='/edit'>Edit</a>
+<br/>
+<br/>
+
+<body>
+
+<h1>Query</h1>
+
+<script src='https://dotcontact.me/static/contact.js' id="dotcontact" >
+</script>
+
+<script type="text/javascript">
+
+function form_click() {
+    var domain = document.getElementById("domain").value;
+
+    load_contact('content', domain);
+}
+
+</script>
+
+
+Domain: <input type="text" name="domain" id="domain"/>
+<p/>
+<input type=button value="Query" onclick="form_click();"/>
+
+<div id='content'></div>
+
+</body>
+</html>
