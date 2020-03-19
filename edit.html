@@ -1,11 +1,11 @@
 <html>
 
 <head>
-<title>{{title}}</title>
+<title>Edit</title>
 <style>body {font-family: "Trebuchet MS", Helvetica, sans-serif;}</style>
 
 </head>
-<a href='/'>Query</a> | <a href='/edit'>Edit</a>
+<a href='/'>Query</a> | <a href='/edit.html'>Edit</a>
 <br/>
 <br/>
 
@@ -22,11 +22,13 @@
 }
 </style>
 
-
 <div id="app"></div>
+
 
 <script src='https://fb.me/react-15.1.0.min.js'></script>
 <script src='https://fb.me/react-dom-15.1.0.min.js'></script>
+
+<script src='https://dotcontact.me/static/domainconnect.js'></script>
 
 <script id="rendered-js">
 
@@ -60,24 +62,13 @@ class ContactList extends React.Component {
 class ContactListDNS extends React.Component {
 
     render() {
-        var x = "[";
-	for (var i = 0; i < this.props.items.length; i++) {		
-		x = x + "{";
-		x = x + '"name": "' + this.props.items[i].name + '",';
-		x = x + '"url": "' + this.props.items[i].url + '",';		
-		x = x + '"icon": "'+ this.props.items[i].icon + '"';
-		x = x + "}";
-		if (i < this.props.items.length - 1) x = x + ","
-	}
-	x = x + "]";
-	
         return (
             React.createElement("div", {}, 
                 React.createElement("h2", null, "JSON/DNS Data"),
                 React.createElement("h3", {}, "json"),
-                React.createElement("span", {className: "wrap"}, x),
+                React.createElement("span", {className: "wrap"}, this.props.itemData),
                 React.createElement("h3", {}, "_dotcontact DNS Entry"),
-                React.createElement("span", {className: "wrap"}, btoa(x)),	
+                React.createElement("span", {className: "wrap"}, btoa(this.props.itemData)),	
             )
         );
     }
@@ -226,6 +217,7 @@ class ContactApp extends React.Component {
 	this.moveItemUp = this.moveItemUp.bind(this);
 	this.moveItemDown = this.moveItemDown.bind(this);
 	this.toggleShowDetails = this.toggleShowDetails.bind(this);
+	this.configure = this.configure.bind(this);
         this.state = { contactItems: contactItems, showDetails: showDetails };
     }
 
@@ -295,13 +287,40 @@ class ContactApp extends React.Component {
         showDetails = !showDetails;
     	this.setState({ showDetails: showDetails});
     }
+
+    configure(eventData) {
+        var x = "[";
+	for (var i = 0; i < contactItems.length; i++) {		
+		x = x + "{";
+		x = x + '"name": "' + contactItems[i].name + '",';
+		x = x + '"url": "' + contactItems[i].url + '",';		
+		x = x + '"icon": "'+ contactItems[i].icon + '"';
+		x = x + "}";
+		if (i < contactItems.length - 1) x = x + ","
+	}
+	x = x + "]";
+
+      window.location.href = '/configure.html?data=' + btoa(x) + '&domain=' + this.refs.domainName.value;
+    }
   
     render() {
 
-        var dnsDetails = "";
+        var x = "[";
+	for (var i = 0; i < contactItems.length; i++) {		
+		x = x + "{";
+		x = x + '"name": "' + contactItems[i].name + '",';
+		x = x + '"url": "' + contactItems[i].url + '",';		
+		x = x + '"icon": "'+ contactItems[i].icon + '"';
+		x = x + "}";
+		if (i < contactItems.length - 1) x = x + ","
+	}
+	x = x + "]";
+
+        var dnsDetails = "";      
+
 	var showDetailsButtonText;
 	if (showDetails) {
-	   dnsDetails = React.createElement(ContactListDNS, {items: contactItems});
+	   dnsDetails = React.createElement(ContactListDNS, {itemData: x});
 	   showDetailsButtonText = "Hide DNS Details";
         } else {
 	    showDetailsButtonText = "Show DNS Details";
@@ -311,14 +330,17 @@ class ContactApp extends React.Component {
         return (
             React.createElement("div", { id: "main" },
                 React.createElement("h1", null, "Dot Contact Editor"),
-                React.createElement("h2", null, "Query Values from DNS"),
+		React.createElement("h2", null, "Domain"),
 		React.createElement("input", { type: "text", ref: "domainName", placeholder: "domain name..." }),
+		React.createElement("h2", null, "Query Values from DNS"),
 		React.createElement("button", { type: "button", onClick: this.fetchItems}, "Query"),
                 React.createElement(ContactList, { items: contactItems, removeItem: this.removeItem, moveItemUp: this.moveItemUp, moveItemDown: this.moveItemDown}),
-		React.createElement("br", null),
+ 	        React.createElement(ContactForm, { addItem: this.addItem }),
+		React.createElement("h2", null, "Configure DNS"),
+		React.createElement("button", { type: "button", onClick: this.configure}, "Configure"),
+		React.createElement("h2", null, "Details"),
 		React.createElement("button", { type: "button", onClick: this.toggleShowDetails}, showDetailsButtonText),
 		dnsDetails,
- 	        React.createElement(ContactForm, { addItem: this.addItem })
             )
     )};
 }

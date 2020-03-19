@@ -1,0 +1,69 @@
+<html>
+
+<head>
+<title>Configure</title>
+<style>body {font-family: "Trebuchet MS", Helvetica, sans-serif;}</style>
+
+</head>
+<a href='/'>Query</a> | <a href='/edit.html'>Edit</a>
+<br/>
+<br/>
+
+
+<body>
+
+<h1>Configure</h1>
+
+<script src="https://exampleservice.domainconnect.org/static/domainconnect.js"></script>
+
+<script type="text/javascript">
+
+var qs = (function(a) {
+  if (a == "") return {};
+  var b = {};
+  for (var i = 0; i < a.length; ++i) {
+      var p=a[i].split('=', 2);
+      if (p.length == 1)
+         b[p[0]] = "";
+      else
+         b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+   }
+   return b;
+})(window.location.search.substr(1).split('&'));
+
+function callbackfunc(url, domain, host, provider_name, data) {
+    if (url === '') {
+       document.getElementById("domainconnect").style.display = "none";
+
+       document.getElementById("manual").style.display = "block";
+       document.getElementById("manual").innerHTML = "Please set at TXT record in DNS for the domain " + domain + " to " + data;
+    } else {
+       document.getElementById("manual").style.display = "none";
+
+       document.getElementById("domainconnect").style.display = "block";
+       url = url + "&data=" + encodeURIComponent(data);
+       document.getElementById("domainconnect").innerHTML = "It looks like your domain is with " + provider_name + ". Click <a href='" + url + "'>here</a> to configure DNS.";
+    }
+}
+		      
+
+function domainclick() {
+
+      domain = qs['domain'];
+      data = qs['data'];
+      domain_connect(domain, '', data, 'dotcontact.me', 'info', callbackfunc);
+}
+
+domainclick();
+</script>
+
+<body>
+
+<div id=domainconnect>
+</div>
+
+<div id=manual>
+</div>
+
+</body>
+</html>
